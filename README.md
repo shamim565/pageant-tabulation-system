@@ -1,2 +1,2 @@
 # pageant-tabulation-system
-A Next.js web app for tabulating scores in pageants and events. Features real-time judge score input, automated result calculation, and a modern, accessible UI built with Shadcn/UI and Tailwind CSS. Simplifies event scoring with precision and style.
+A full-stack Django application for tabulating scores in pageants and events. Features include judge score input, automated result calculation with average scores, and a simple Tailwind-styled frontend. Built for reliability and ease of use.
