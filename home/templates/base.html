@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pageant Tabulation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.2.1/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    {% include 'navbar.html' %}
+    <div class="flex">
+        {% if request.user.is_superuser %}
+            {% block sidebar %}{% endblock %}
+        {% endif %}
+        <main class="flex-1 p-6 {% if request.user.is_superuser %}sm:ml-64{% endif %}">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.2.1/dist/flowbite.min.js"></script>
+</body>
+</html>

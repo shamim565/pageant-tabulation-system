@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Modal for Rules -->
+<div id="rules-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center" hx-once hx-get="{% url 'judge_dashboard' %}" hx-trigger="load">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-md">
+        <h2 class="text-xl font-bold text-indigo-600 mb-4">Marking Guidelines</h2>
+        <ul class="list-disc pl-5 space-y-2">
+            <li>Score between 0 and 100 based on performance.</li>
+            <li>Be fair and unbiased in your judgment.</li>
+            <li>Consider all criteria equally unless specified.</li>
+            <li>Submit scores only once per candidate per criteria.</li>
+            <li>Contact the admin for any discrepancies.</li>
+        </ul>
+        <button onclick="document.getElementById('rules-modal').remove()" class="mt-4 bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700">Close</button>
+    </div>
+</div>
+
+<h1 class="text-3xl font-bold text-indigo-600 mb-6">Judge Dashboard</h1>
+<div class="bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-xl font-semibold mb-4">Score Candidates</h2>
+    <form hx-post="{% url 'submit_score' %}" hx-target="#score-result" class="space-y-4">
+        <div>
+            <label class="block">Pageant</label>
+            <select name="pageant" class="w-full p-2 border rounded" required>
+                {% for pageant in pageants %}
+                    <option value="{{ pageant.id }}">{{ pageant.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block">Candidate</label>
+            <select name="candidate" class="w-full p-2 border rounded" required>
+                {% for candidate in candidates %}
+                    <option value="{{ candidate.id }}">{{ candidate.name }} ({{ candidate.gender }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block">Criteria</label>
+            <select name="criteria" class="w-full p-2 border rounded" required>
+                {% for criterion in criteria %}
+                    <option value="{{ criterion.id }}">{{ criterion.title }} ({{ criterion.percentage }}%)</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block">Score</label>
+            <input type="number" name="score" min="0" max="100" class="w-full p-2 border rounded" required>
+        </div>
+        <button type="submit" class="bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700">Submit Score</button>
+    </form>
+    <div id="score-result" class="mt-4"></div>
+</div>
+{% endblock %}

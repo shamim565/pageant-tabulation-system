@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block sidebar %}{% include 'sidebar.html' %}{% endblock %}
+{% block content %}
+<div class="container mx-auto">
+    <h1 class="text-2xl font-bold mb-4">{{ event.title }}</h1>
+    <p><strong>Venue:</strong> {{ event.venue }}</p>
+    <p><strong>Start Date:</strong> {{ event.start_date }}</p>
+    <p><strong>End Date:</strong> {{ event.end_date }}</p>
+    <p><strong>Description:</strong> {{ event.description|default:"N/A" }}</p>
+</div>
+{% endblock %}

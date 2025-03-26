@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block sidebar %}{% include 'sidebar.html' %}{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg mt-10">
+  <h2 class="text-2xl font-bold text-indigo-600 mb-6">Create Judge Account</h2>
+  
+  <!-- Messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="mb-4 p-4 {% if message.tags == 'success' %}bg-green-50 text-green-800 border-l-4 border-green-500{% else %}bg-red-50 text-red-800 border-l-4 border-red-500{% endif %} rounded-r-lg">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
+    
+    <!-- Full Name -->
+    <div class="mb-5">
+      <label for="id_first_name" class="block mb-2 text-sm font-medium text-gray-900">
+        Full Name <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        name="first_name"
+        id="id_first_name"
+        value="{{ form.first_name.value|default:'' }}"
+        class="bg-gray-50 border {% if form.first_name.errors %}border-red-500{% else %}border-gray-300{% endif %} text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+        placeholder="Enter judge's full name"
+        required
+      />
+      {% if form.first_name.errors %}
+        <p class="mt-1 text-sm text-red-500">{{ form.first_name.errors|join:", " }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Username -->
+    <div class="mb-5">
+      <label for="id_username" class="block mb-2 text-sm font-medium text-gray-900">
+        Username <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        name="username"
+        id="id_username"
+        value="{{ form.username.value|default:'' }}"
+        class="bg-gray-50 border {% if form.username.errors %}border-red-500{% else %}border-gray-300{% endif %} text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+        placeholder="Enter a unique username"
+        required
+      />
+      {% if form.username.errors %}
+        <p class="mt-1 text-sm text-red-500">{{ form.username.errors|join:", " }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Password -->
+    <div class="mb-5">
+      <label for="id_password1" class="block mb-2 text-sm font-medium text-gray-900">
+        Password <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="password"
+        name="password1"
+        id="id_password1"
+        class="bg-gray-50 border {% if form.password1.errors %}border-red-500{% else %}border-gray-300{% endif %} text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+        placeholder="Enter a strong password"
+        required
+      />
+      {% if form.password1.errors %}
+        <p class="mt-1 text-sm text-red-500">{{ form.password1.errors|join:", " }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="mb-5">
+      <label for="id_password2" class="block mb-2 text-sm font-medium text-gray-900">
+        Confirm Password <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="password"
+        name="password2"
+        id="id_password2"
+        class="bg-gray-50 border {% if form.password2.errors %}border-red-500{% else %}border-gray-300{% endif %} text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+        placeholder="Re-enter your password"
+        required
+      />
+      {% if form.password2.errors %}
+        <p class="mt-1 text-sm text-red-500">{{ form.password2.errors|join:", " }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Non-Field Errors -->
+    {% if form.non_field_errors %}
+      <div class="text-red-500 text-sm mb-4">
+        {{ form.non_field_errors|join:", " }}
+      </div>
+    {% endif %}
+
+    <button
+      type="submit"
+      class="text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center transition duration-200"
+    >
+      Create Judge
+    </button>
+  </form>
+</div>
+{% endblock %}
