@@ -9,8 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
-# if not SECRET_KEY:
-#     SECRET_KEY = "TODO_SET_SECRET_KEY"
+if not SECRET_KEY:
+    SECRET_KEY = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=50))
 
 DEBUG = os.environ.get("DEBUG", True)
 
@@ -37,7 +37,6 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 INSTALLED_APPS = [
-    # "admin_argon.apps.AdminArgonConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,12 +44,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "home.templatetags.form_filters",
+    "home.templatetags.custom_filters",
     'django_htmx',
     "home",
 ]
 
 
 MIDDLEWARE = [
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -142,12 +143,10 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-STATICFILES_DIRS = [BASE_DIR / 'static']
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 

@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% block sidebar %}{% include 'sidebar.html' %}{% endblock %}
+{% load custom_filters %}
 {% block content %}
 <div class="container mx-auto">
     <h1 class="text-2xl font-bold mb-4">Scores for {{ event.title }}</h1>
     {% for judge in event.judges.all %}
         <h2 class="text-xl font-semibold mb-2">Judge: {{ judge.username }}</h2>
-        {% for round in "Preliminary,Final"|split:"," %}
+        {% for round in rounds %}
             <h3 class="text-lg mb-2">{{ round }}</h3>
             <table class="w-full border-collapse mb-4">
                 <thead>
@@ -16,7 +17,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for score in scores|filter:judge|filter:round %}
+                    {% filter_scores scores judge round as filtered_scores %}
+                    {% for score in filtered_scores %}
                         <tr>
                             <td class="p-2">{{ score.candidate.name }}</td>
                             <td class="p-2">{{ score.criteria.title }}</td>

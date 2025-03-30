@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
 
-
 class Event(models.Model):
     title = models.CharField(max_length=100)
     venue = models.CharField(max_length=100)
@@ -22,8 +21,6 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
-
-# Criteria Model
 class Criteria(models.Model):
     ROUND_CHOICES = [("Preliminary", "Preliminary"), ("Final", "Final")]
     round = models.CharField(max_length=20, choices=ROUND_CHOICES)
@@ -32,33 +29,31 @@ class Criteria(models.Model):
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="criteria"
     )
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="criteria")  # Added
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.title} ({self.round})"
 
-
-# Candidate Model
 class Candidate(models.Model):
     name = models.CharField(max_length=100)
     gender = models.CharField(
         max_length=10,
         choices=[("Male", "Male"), ("Female", "Female"), ("Other", "Other")],
     )
-    picture = models.ImageField(upload_to="candidate_pics/", blank=True, null=True)
+    picture = models.ImageField(upload_to="candidate_pics/", default="candidate_pics/default.jpg")
     position = models.PositiveIntegerField()
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="candidates"
     )
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="candidates")  # Added
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
 
-
-# Score Model (Updated)
 class Score(models.Model):
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
     criteria = models.ForeignKey(Criteria, on_delete=models.CASCADE)

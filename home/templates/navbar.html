@@ -1,27 +1,46 @@
-<!-- navbar.html -->
+{% load static %}
 <nav class="fixed top-0 z-50 w-full bg-gradient-to-r from-indigo-600 to-purple-600 border-b border-gray-200 dark:border-gray-700 shadow-lg">
-    <div class="px-3 py-3 lg:px-5 lg:pl-3">
+    <div class="px-4 py-3 sm:px-6 lg:px-8">
         <div class="container mx-auto flex items-center justify-between">
-            <!-- Brand -->
-            <a href="{% url 'dashboard' %}" class="flex items-center">
-                <span class="self-center text-xl font-semibold whitespace-nowrap text-white md:text-2xl">Pageant System</span>
-            </a>
+            <!-- Left: Brand and Toggle -->
+            <div class="flex items-center space-x-3">
+                <!-- Toggle Button (Mobile Only) -->
+                {% if request.user.is_superuser %}
+                    <button 
+                        data-drawer-target="superuser-sidebar" 
+                        data-drawer-toggle="superuser-sidebar" 
+                        aria-controls="superuser-sidebar" 
+                        type="button" 
+                        class="sm:hidden p-2 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    >
+                        <span class="sr-only">Open sidebar</span>
+                        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+                        </svg>
+                    </button>
+                {% endif %}
+                <!-- Brand -->
+                <a href="{% url 'dashboard' %}" class="flex items-center space-x-2">
+                    <img src="{% static 'school.jpg' %}" alt="School Logo" class="h-8 w-auto sm:h-10 object-contain rounded">
+                    <span class="text-xl font-semibold text-white sm:text-2xl">Pageant System</span>
+                </a>
+            </div>
 
-            <!-- Right side -->
-            <div class="flex items-center">
+            <!-- Right: Logout/Login -->
+            <div class="flex items-center space-x-4">
                 {% if user.is_authenticated %}
                     <form method="post" action="{% url 'logout' %}" class="inline">
                         {% csrf_token %}
-                        <button type="submit" class="flex items-center p-2 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 group transition duration-75">
-                            <svg class="w-5 h-5 mr-2 text-white transition duration-75 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                        <button type="submit" class="flex items-center px-3 py-2 text-white rounded-lg hover:bg-indigo-700 transition duration-75">
+                            <svg class="w-5 h-5 mr-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
                             </svg>
                             <span>Logout</span>
                         </button>
                     </form>
                 {% else %}
-                    <a href="{% url 'login' %}" class="flex items-center p-2 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-800 group transition duration-75">
-                        <svg class="w-5 h-5 mr-2 text-white transition duration-75 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                    <a href="{% url 'login' %}" class="flex items-center px-3 py-2 text-white rounded-lg hover:bg-indigo-700 transition duration-75">
+                        <svg class="w-5 h-5 mr-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
                         </svg>
                         <span>Login</span>
@@ -31,10 +50,4 @@
         </div>
     </div>
 </nav>
-
-<!-- Add padding to the top of the body to account for fixed navbar -->
-<style>
-    body {
-        padding-top: 64px; /* Adjust this value based on your navbar height */
-    }
-</style>
+<div class="pt-16"></div>

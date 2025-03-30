@@ -2,14 +2,10 @@
 {% block sidebar %}{% include 'sidebar.html' %}{% endblock %}
 {% block content %}
 <div class="container mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Judges{% if event %} for {{ event.title }}{% endif %}</h1>
+    <h1 class="text-2xl font-bold mb-4">Judges</h1>
     <div class="flex justify-between mb-4">
-        <input type="text" hx-get="{% if event %}{% url 'event_judge_list' event.id %}{% else %}{% url 'judge_list' %}{% endif %}" hx-target="#judge-list" hx-trigger="keyup delay:500ms" name="q" value="{{ query }}" placeholder="Search judges..." class="p-2 border rounded">
-        {% if event %}
-            <a href="{% url 'event_judge_add' event.id %}" class="bg-blue-500 text-white px-4 py-2 rounded">Add Judge</a>
-        {% else %}
-            <a href="{% url 'judge_create' %}" class="bg-blue-500 text-white px-4 py-2 rounded">Create Judge</a>
-        {% endif %}
+        <input type="text" hx-get="{% url 'judge_list' %}" hx-target="#judge-list" hx-trigger="keyup delay:500ms" name="q" value="{{ query }}" placeholder="Search judges..." class="p-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+        <a href="{% url 'judge_create' %}" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Create Judge</a>
     </div>
     <div id="judge-list">
         {% include "partials/judge_list_table.html" %}
