@@ -1,15 +1,18 @@
 services:
   - type: web
-    name: __PROJECT_NAME__
+    name: pageant-tabulation-system 
     plan: free
     env: python
-    region: Singapore  # region should be same as your database region.
+    region: singapore  # Lowercase for consistency
     buildCommand: "./build.sh"
     startCommand: "gunicorn core.wsgi:application"
     envVars:
       - key: DEBUG
-        value: False
+        value: false  # Note: lowercase boolean for YAML
       - key: SECRET_KEY
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
+      - key: CLOUDINARY_CLOUD_NAME
+      - key: CLOUDINARY_API_KEY
+      - key: CLOUDINARY_API_SECRET
