@@ -31,9 +31,6 @@ RUN pipenv run python manage.py migrate
 # Collect static files
 RUN pipenv run python manage.py collectstatic --no-input
 
-# Create a superuser
-RUN python manage.py createsu
-
 # Expose port
 EXPOSE 8000
 
