@@ -10,7 +10,6 @@ services:
       - key: DEBUG
         value: false  # Note: lowercase boolean for YAML
       - key: SECRET_KEY
-        generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
       - key: CLOUDINARY_CLOUD_NAME
@@ -23,7 +22,6 @@ services:
       - key: DB_PASS
       - key: DB_HOST
       - key: DB_PORT
-        value: 5432
       - key: DJANGO_SUPERUSER_USERNAME
         value: admin
       - key: DJANGO_SUPERUSER_PASSWORD
