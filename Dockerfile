@@ -9,26 +9,30 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Set work directory
 WORKDIR /app
 
-# System deps
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Install system dependencies & Python dependencies
+COPY Pipfile Pipfile.lock ./
 
-# Install pipenv first
-COPY Pipfile* ./
-RUN pip install --upgrade pip \
+RUN apt-get update \
+    && apt-get install -y gcc build-essential libpq-dev curl \
+    && pip install --upgrade pip \
     && pip install pipenv \
-    && pipenv install --deploy --ignore-pipfile
+    && pipenv install --deploy --ignore-pipfile \
+    && apt-get remove -y gcc build-essential \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy project files
 COPY . .
 
+# Apply database migrations
+RUN pipenv run python manage.py migrate
+
 # Collect static files
 RUN pipenv run python manage.py collectstatic --no-input
 
-# Apply database migrations
-RUN pipenv run python manage.py migrate
+# Create a superuser
+RUN python manage.py createsu
 
 # Expose port
 EXPOSE 8000

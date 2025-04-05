@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: pageant-tabulation-system 
+    name: pageant-tabulation 
     plan: free
     env: python
     region: singapore  # Lowercase for consistency
@@ -16,3 +16,11 @@ services:
       - key: CLOUDINARY_CLOUD_NAME
       - key: CLOUDINARY_API_KEY
       - key: CLOUDINARY_API_SECRET
+      - key: DB_ENGINE
+        value: postgresql
+      - key: DB_NAME
+      - key: DB_USERNAME
+      - key: DB_PASS
+      - key: DB_HOST
+      - key: DB_PORT
+        value: 5432
