@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "71227e55983cff6e0976beb32d2a66e1ce4d7a9a4f99cab444bd288eac5c552e"
+            "sha256": "111f6895ea7c5909027deda343485e204ba9e8a5e75cbf223408eb06fd6e8e18"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -23,6 +23,22 @@
             ],
             "markers": "python_version >= '3.8'",
             "version": "==3.8.1"
+        },
+        "certifi": {
+            "hashes": [
+                "sha256:3d5da6925056f6f18f119200434a4780a94263f10d1c21d032a6f6b2baa20651",
+                "sha256:ca78db4565a652026a4db2bcdf68f2fb589ea80d0be70e03929ed730746b84fe"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==2025.1.31"
+        },
+        "cloudinary": {
+            "hashes": [
+                "sha256:cdfe53473fd9564cfb3ff99f93fc6d3a1928f81e7e81920d1b3373bc9768cbd4",
+                "sha256:d2b4ce247e0fff558fd8326df5db7c94bce15521c5ff53edafbe1bb2e8128cef"
+            ],
+            "index": "pypi",
+            "version": "==1.43.0"
         },
         "django": {
             "hashes": [
@@ -172,6 +188,14 @@
             "markers": "python_version >= '3.8'",
             "version": "==1.0.1"
         },
+        "six": {
+            "hashes": [
+                "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274",
+                "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
+            "version": "==1.17.0"
+        },
         "sqlparse": {
             "hashes": [
                 "sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272",
@@ -187,6 +211,14 @@
             ],
             "markers": "python_version >= '2'",
             "version": "==2025.1"
+        },
+        "urllib3": {
+            "hashes": [
+                "sha256:1cee9ad369867bfdbbb48b7dd50374c0967a0bb7710050facf0dd6911440e3df",
+                "sha256:f8c5449b3cf0861679ce7e0503c7b44b5ec981bec0d1d3795a07f1ba96f0204d"
+            ],
+            "markers": "python_version >= '3.9'",
+            "version": "==2.3.0"
         },
         "whitenoise": {
             "hashes": [

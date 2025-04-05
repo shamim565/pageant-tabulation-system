@@ -10,6 +10,7 @@ whitenoise = "*"
 python-dotenv = "*"
 django-htmx = "*"
 pillow = "*"
+cloudinary = "*"
 
 [dev-packages]
 

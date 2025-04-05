@@ -42,7 +42,7 @@ class Candidate(models.Model):
         max_length=10,
         choices=[("Male", "Male"), ("Female", "Female"), ("Other", "Other")],
     )
-    picture = models.ImageField(upload_to="candidate_pics/", default="candidate_pics/default.jpg")
+    picture = models.ImageField(upload_to="candidate_pics/", default="candidate_pics/default")
     position = models.PositiveIntegerField()
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="candidates"

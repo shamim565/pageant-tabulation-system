@@ -1,14 +1,16 @@
-#!/usr/bin/env bash
-# exit on error
-set -o errexit
+#!/bin/bash
+set -o errexit  # Exit on any error
 
+# Install pipenv if not already present
 python -m pip install --upgrade pip
+pip install pipenv
 
-pip install -r requirements.txt
+# Install dependencies from Pipfile
+pipenv install
 
-python manage.py collectstatic --no-input
-python manage.py makemigrations
-python manage.py migrate
+# Collect static files (assuming this is a Django project)
+pipenv run python manage.py collectstatic --no-input
 
-#__API_GENERATOR__
-#__API_GENERATOR__END
+# Make migrations and migrate the database
+# pipenv run python manage.py makemigrations
+pipenv run python manage.py migrate

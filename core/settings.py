@@ -17,7 +17,7 @@ DEBUG = os.environ.get("DEBUG", True)
 APP_DOMAIN = os.getenv("APP_DOMAIN", "localhost")
 
 # HOSTs List
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", APP_DOMAIN, ".deploypro.dev"]
+ALLOWED_HOSTS = ["*", "127.0.0.1", "localhost", APP_DOMAIN, ".deploypro.dev"]
 
 # Add here your deployment HOSTS
 CSRF_TRUSTED_ORIGINS = [
@@ -141,12 +141,21 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+# Cloudinary settings
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+}
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 
