@@ -1,0 +1,85 @@
+{% load custom_filters %}
+<div class="mb-8">
+    <h3 class="text-xl font-medium mb-4 text-gray-900">{{ gender }} Candidates</h3>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+        <table class="w-full border-collapse min-w-[600px]">
+            <thead>
+                <tr class="bg-indigo-600 text-white text-left">
+                    <th class="p-2">No.</th>
+                    <th class="p-2">Rank</th>
+                    <th class="p-2">Name</th>
+                    {% for criterion in criteria %}
+                        <th class="p-2">{{ criterion.title }} ({{ criterion.percentage }}%)</th>
+                    {% endfor %}
+                    <th class="p-2">Total Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for candidate in candidates %}
+                    {% with total_score=total_scores|get_item:candidate.id %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="p-2">{{ candidate.position }}</td>
+                        <td class="p-2">
+                            {% if round_type == "Preliminary" %}
+                                {% if gender == "Female" %}
+                                    {{ prelim_female_ranks|get_item:candidate.id|default:"-" }}
+                                {% else %}
+                                    {{ prelim_male_ranks|get_item:candidate.id|default:"-" }}
+                                {% endif %}
+                            {% elif round_type == "Final" %}
+                                {% if winners %}
+                                    {% if gender == "Female" %}
+                                        {% with rank=final_female_ranks|get_item:candidate.id %}
+                                            {% if rank == 1 %}<span class="text-yellow-600">Winner</span>
+                                            {% elif rank == 2 %}<span class="text-gray-600">1st Runner Up</span>
+                                            {% elif rank == 3 %}<span class="text-amber-600">2nd Runner Up</span>
+                                            {% elif rank == 4 %}3rd Runner Up
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% elif gender == "Male" %}
+                                        {% with rank=final_male_ranks|get_item:candidate.id %}
+                                            {% if rank == 1 %}<span class="text-yellow-600">Winner</span>
+                                            {% elif rank == 2 %}<span class="text-gray-600">1st Runner Up</span>
+                                            {% elif rank == 3 %}<span class="text-amber-600">2nd Runner Up</span>
+                                            {% elif rank == 4 %}3rd Runner Up
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endif %}
+                                {% else %}
+                                    {% if gender == "Female" %}
+                                        {{ final_female_ranks|get_item:candidate.id|default:"-" }}
+                                    {% else %}
+                                        {{ final_male_ranks|get_item:candidate.id|default:"-" }}
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td class="p-2">
+                            {% if candidate.picture %}
+                                <img src="{{ candidate.picture.url }}" alt="{{ candidate.name }}" class="w-12 h-12 inline-block mr-2 rounded-full">
+                            {% endif %}
+                            {{ candidate.name }}
+                        </td>
+                        {% for criterion in criteria %}
+                            <td class="p-2">
+                                {% with scores_dict|get_item:candidate.id as candidate_scores %}
+                                    {% with candidate_scores|get_item:criterion.id as score %}
+                                        {% if score is not None %}
+                                            <span class="text-gray-500">{{ score|floatformat:1 }}</span>
+                                        {% else %}
+                                            <span class="text-gray-500">0</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endwith %}
+                            </td>
+                        {% endfor %}
+                        <td class="p-2" id="total-score-{{ candidate.id }}-{{ round_type }}">
+                            <span class="text-gray-500">{{ total_score|default:0|floatformat:1 }}</span>
+                        </td>
+                    </tr>
+                    {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

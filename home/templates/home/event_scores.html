@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block sidebar %}{% include 'sidebar.html' %}{% endblock %}
+{% block content %}
+<div class="container mx-auto p-6">
+    <h1 class="text-center text-3xl font-semibold mb-8 text-gray-900">{{ event.title }}</h1>
+
+    <!-- Navigation Tabs -->
+    <ul class="flex border-b border-gray-200">
+        <li class="mr-1">
+            <a href="#" data-tab="preliminary" class="tab-link inline-block py-2 px-4 text-indigo-600 font-semibold border-b-2 border-indigo-600" onclick="showTab(event, 'preliminary')">Preliminary Round</a>
+        </li>
+        <li class="mr-1">
+            <a href="#" data-tab="final" class="tab-link inline-block py-2 px-4 text-gray-600 font-semibold hover:text-indigo-600" onclick="showTab(event, 'final')">Final Round</a>
+        </li>
+        <li class="mr-1">
+            <a href="#" data-tab="winners" class="tab-link inline-block py-2 px-4 text-gray-600 font-semibold hover:text-indigo-600" onclick="showTab(event, 'winners')">Winners</a>
+        </li>
+    </ul>
+
+    <!-- Preliminary Round -->
+    <div id="preliminary" class="tab-content">
+        <h2 class="text-2xl font-bold mb-4 text-indigo-700">Preliminary Round</h2>
+        {% include 'partials/candidate_list.html' with candidates=female_candidates gender="Female" criteria=preliminary_criteria scores_dict=prelim_scores_dict total_scores=prelim_total_scores round_type="Preliminary" %}
+        {% if male_candidates %}
+            {% include 'partials/candidate_list.html' with candidates=male_candidates gender="Male" criteria=preliminary_criteria scores_dict=prelim_scores_dict total_scores=prelim_total_scores round_type="Preliminary" %}
+        {% endif %}
+    </div>
+
+    <!-- Final Round -->
+    <div id="final" class="tab-content hidden">
+        <h2 class="text-2xl font-bold mb-4 text-indigo-700">Final Round</h2>
+        {% include 'partials/candidate_list.html' with candidates=final_female_candidates gender="Female" criteria=final_criteria scores_dict=final_scores_dict total_scores=final_total_scores round_type="Final" %}
+        {% if final_male_candidates %}
+            {% include 'partials/candidate_list.html' with candidates=final_male_candidates gender="Male" criteria=final_criteria scores_dict=final_scores_dict total_scores=final_total_scores round_type="Final" %}
+        {% endif %}
+    </div>
+
+    <!-- Winners -->
+    <div id="winners" class="tab-content hidden">
+        <h2 class="text-2xl font-bold mb-4 text-indigo-700">Winners</h2>
+        {% include 'partials/candidate_list.html' with candidates=final_female_candidates gender="Female" criteria=final_criteria scores_dict=final_scores_dict total_scores=final_total_scores round_type="Final" winners=True winner_ids=winner_ids %}
+        {% if final_male_candidates %}
+            {% include 'partials/candidate_list.html' with candidates=final_male_candidates gender="Male" criteria=final_criteria scores_dict=final_scores_dict total_scores=final_total_scores round_type="Final" winners=True winner_ids=winner_ids %}
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function showTab(event, tabName) {
+    if (event) event.preventDefault();
+    
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+    });
+
+    const selectedTab = document.getElementById(tabName);
+    if (selectedTab) {
+        selectedTab.classList.remove('hidden');
+    }
+
+    document.querySelectorAll('.tab-link').forEach(link => {
+        link.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+        link.classList.add('text-gray-600');
+    });
+
+    const activeLink = document.querySelector(`a[data-tab="${tabName}"]`);
+    if (activeLink) {
+        activeLink.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
+    }
+}
+</script>
+{% endblock %}
