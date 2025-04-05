@@ -1,5 +1,5 @@
 # Bind to Render's expected host and port
-bind = "0.0.0.0:10000"  # Render requires port 10000
+bind = "0.0.0.0:8000"  # Render requires port 10000
 
 # Number of workers
 workers = 1 

@@ -1,24 +1,37 @@
+# Use official Python base image
 FROM python:3.13
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 
-COPY requirements.txt .
-# install python dependencies
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+# Set work directory
+WORKDIR /app
 
+# System deps
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pipenv first
+COPY Pipfile* ./
+RUN pip install --upgrade pip \
+    && pip install pipenv \
+    && pipenv install --deploy --ignore-pipfile
+
+# Copy project files
 COPY . .
 
-# Set UP
-RUN python manage.py collectstatic --no-input
-RUN python manage.py makemigrations
-RUN python manage.py migrate
+# Collect static files
+RUN pipenv run python manage.py collectstatic --no-input
 
-#__API_GENERATOR__
-#__API_GENERATOR__END
+# Apply database migrations
+RUN pipenv run python manage.py migrate
 
-# Start Server
-EXPOSE 5005
-CMD ["gunicorn", "--config", "gunicorn-cfg.py", "core.wsgi"]
+# Expose port
+EXPOSE 8000
+
+# Start Gunicorn
+CMD ["pipenv", "run", "gunicorn", "--config", "gunicorn-cfg.py", "core.wsgi"]
