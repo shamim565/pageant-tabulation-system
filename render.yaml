@@ -1,14 +1,12 @@
 services:
   - type: web
-    name: pageant-tabulation 
+    name: pageant-tabulation
+    env: docker
     plan: free
-    env: python
-    region: singapore  # Lowercase for consistency
-    buildCommand: "./build.sh"
-    startCommand: "gunicorn core.wsgi:application"
+    region: singapore
     envVars:
       - key: DEBUG
-        value: false  # Note: lowercase boolean for YAML
+        value: false
       - key: SECRET_KEY
       - key: WEB_CONCURRENCY
         value: 4

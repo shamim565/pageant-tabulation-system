@@ -1,15 +1,11 @@
-# Use official Python base image
-FROM python:3.13
+FROM python:3.13-slim
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1
 
-# Set work directory
 WORKDIR /app
 
-# Install system dependencies & Python dependencies
 COPY Pipfile Pipfile.lock ./
 
 RUN apt-get update \
@@ -22,19 +18,10 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy project files
 COPY . .
 
-# Apply database migrations
-RUN pipenv run python manage.py migrate
+RUN chmod +x start.sh
 
-# Collect static files
-RUN pipenv run python manage.py collectstatic --no-input
-
-RUN pipenv run python manage.py createsu
-
-# Expose port
 EXPOSE 8000
 
-# Start Gunicorn
-CMD ["pipenv", "run", "gunicorn", "--config", "gunicorn-cfg.py", "core.wsgi"]
+CMD ["./start.sh"]
