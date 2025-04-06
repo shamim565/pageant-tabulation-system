@@ -85,8 +85,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
-
-DB_ENGINE = os.getenv("DB_ENGINE", None)
+# Database
 DB_USERNAME = os.getenv("DB_USERNAME", None)
 DB_PASS = os.getenv("DB_PASS", None)
 DB_HOST = os.getenv("DB_HOST", None)
