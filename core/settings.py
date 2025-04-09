@@ -100,7 +100,7 @@ DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 
-if DB_NAME and DB_USERNAME:
+if not DEBUG and DB_NAME and DB_USERNAME:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -142,6 +142,8 @@ LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = f"https://res.cloudinary.com/{os.getenv('CLOUDINARY_CLOUD_NAME')}/"
+
 
 # Cloudinary settings
 CLOUDINARY_STORAGE = {
@@ -149,13 +151,7 @@ CLOUDINARY_STORAGE = {
     "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-# Switch storage based on DEBUG
-if not DEBUG:
-    print("Using Cloudinary for file storage")
-    MEDIA_URL = f"https://res.cloudinary.com/{os.getenv('CLOUDINARY_CLOUD_NAME')}/"
-    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-else:
-    print("Using local file storage")
-    MEDIA_URL = "/media/"
-    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+
+
