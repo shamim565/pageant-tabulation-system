@@ -150,7 +150,7 @@ CLOUDINARY_STORAGE = {
 }
 
 # Switch storage based on DEBUG
-if DEBUG:
+if not DEBUG:
     print("Using Cloudinary for file storage")
     MEDIA_URL = f"https://res.cloudinary.com/{os.getenv('CLOUDINARY_CLOUD_NAME')}/"
     DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
