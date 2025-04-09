@@ -1,25 +1,33 @@
-import os, random, string
+import os
+import random
+import string
 from pathlib import Path
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
-load_dotenv()  # LOAD variables from .env
+load_dotenv()  # Load variables from .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
-    SECRET_KEY = ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=50))
+    SECRET_KEY = "".join(
+        random.choices(string.ascii_letters + string.digits + string.punctuation, k=50)
+    )
 
-DEBUG = os.environ.get("DEBUG", True)
+# Convert DEBUG to boolean
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
 APP_DOMAIN = os.getenv("APP_DOMAIN", "localhost")
 
 # HOSTs List
 ALLOWED_HOSTS = ["*", "127.0.0.1", "localhost", APP_DOMAIN, ".deploypro.dev"]
 
-# Add here your deployment HOSTS
+# Add CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:5085",
@@ -30,25 +38,25 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.deploypro.dev",
 ]
 
-RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "cloudinary_storage",  # Before staticfiles
     "django.contrib.staticfiles",
+    "cloudinary",
+    "django_htmx",
+    "home",
     "home.templatetags.form_filters",
     "home.templatetags.custom_filters",
-    'django_htmx',
-    "home",
 ]
-
 
 MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
@@ -60,7 +68,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django_htmx.middleware.HtmxMiddleware',
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -86,11 +94,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "core.wsgi.application"
 
 # Database
-DB_USERNAME = os.getenv("DB_USERNAME", None)
-DB_PASS = os.getenv("DB_PASS", None)
-DB_HOST = os.getenv("DB_HOST", None)
-DB_PORT = os.getenv("DB_PORT", None)
-DB_NAME = os.getenv("DB_NAME", None)
+DB_USERNAME = os.getenv("DB_USERNAME")
+DB_PASS = os.getenv("DB_PASS")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME")
 
 if DB_NAME and DB_USERNAME:
     DATABASES = {
@@ -107,47 +115,32 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": "db.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
         }
     }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/"
 
-MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
 
 # Cloudinary settings
 CLOUDINARY_STORAGE = {
@@ -155,6 +148,13 @@ CLOUDINARY_STORAGE = {
     "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-
+# Switch storage based on DEBUG
+if DEBUG:
+    print("Using Cloudinary for file storage")
+    MEDIA_URL = f"https://res.cloudinary.com/{os.getenv('CLOUDINARY_CLOUD_NAME')}/"
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+else:
+    print("Using local file storage")
+    MEDIA_URL = "/media/"
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"

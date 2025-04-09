@@ -10,8 +10,9 @@ whitenoise = "*"
 python-dotenv = "*"
 django-htmx = "*"
 pillow = "*"
-cloudinary = "*"
 psycopg2-binary = "*"
+cloudinary = "*"
+django-cloudinary-storage = "*"
 
 [dev-packages]
 
