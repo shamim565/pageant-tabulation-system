@@ -1,7 +1,11 @@
-
 {% load custom_filters %}
-<div class="mb-8">
-    <h3 class="text-xl font-medium mb-4 text-gray-900">{{ gender }} Candidates</h3>
+<div class="mb-8" id="table-container-{{ table_id }}">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-medium text-gray-900">{{ gender }} Candidates</h3>
+        <button class="print-btn bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700" data-table-id="{{ table_id }}" onclick="printTable('{{ table_id }}')">
+            Print / Save as PDF
+        </button>
+    </div>
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
         <table class="w-full border-collapse min-w-[600px]">
             <thead>
@@ -10,8 +14,8 @@
                     <th class="p-2">Rank</th>
                     <th class="p-2">Name</th>
                     {% if winners %}
-                        <th class="p-2">Preliminary</th>
-                        <th class="p-2">Final</th>
+                        <th class="p-2">Preliminary Score</th>
+                        <th class="p-2">Final Score</th>
                     {% else %}
                         {% if round_type == "Final" %}
                             <th class="p-2">Preliminary Total</th>
