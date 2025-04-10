@@ -227,8 +227,6 @@ def event_detail(request, event_id):
 def judge_list(request):
     query = request.GET.get("q", "")
     judges = User.objects.filter(Q(username__icontains=query)&Q(is_superuser=False)).order_by("username")
-    if is_admin(request.user):
-        judges = judges.filter(groups__name="Judge")
     paginator = Paginator(judges, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
