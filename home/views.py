@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Sum, Avg
 from django.contrib import messages
 from .forms import EventForm, JudgeForm, CriteriaForm, CandidateForm
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.template.loader import render_to_string
 
 
@@ -30,7 +30,7 @@ def profile(request):
 @login_required
 def dashboard(request):
     if is_admin(request.user):
-        events = Event.objects.all()
+        events = Event.objects.filter(created_by=request.user)
         return render(
             request,
             "home/admin_dashboard.html",
@@ -80,6 +80,12 @@ def event_list(request):
     events = Event.objects.filter(
         Q(title__icontains=query) | Q(venue__icontains=query)
     ).order_by("-created_at")
+    
+    if is_admin(request.user):
+        events = events.filter(created_by=request.user)
+    elif is_judge(request.user):
+        events = events.filter(judges=request.user)
+        
     paginator = Paginator(events, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -221,6 +227,8 @@ def event_detail(request, event_id):
 def judge_list(request):
     query = request.GET.get("q", "")
     judges = User.objects.filter(Q(username__icontains=query)&Q(is_superuser=False)).order_by("username")
+    if is_admin(request.user):
+        judges = judges.filter(groups__name="Judge")
     paginator = Paginator(judges, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
