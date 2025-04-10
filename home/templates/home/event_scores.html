@@ -30,18 +30,18 @@
     <!-- Final Round -->
     <div id="final" class="tab-content hidden">
         <h2 class="text-2xl font-bold mb-4 text-indigo-700">Final Round</h2>
-        {% include 'partials/candidate_list.html' with candidates=final_female_candidates gender="Female" criteria=final_criteria scores_dict=final_scores_dict total_scores=final_total_scores round_type="Final" %}
+        {% include 'partials/candidate_list.html' with candidates=final_female_candidates gender="Female" criteria=final_criteria scores_dict=final_scores_dict total_scores=total_combined_scores round_type="Final" prelim_total_scores=prelim_total_scores %}
         {% if final_male_candidates %}
-            {% include 'partials/candidate_list.html' with candidates=final_male_candidates gender="Male" criteria=final_criteria scores_dict=final_scores_dict total_scores=final_total_scores round_type="Final" %}
+            {% include 'partials/candidate_list.html' with candidates=final_male_candidates gender="Male" criteria=final_criteria scores_dict=final_scores_dict total_scores=total_combined_scores round_type="Final" prelim_total_scores=prelim_total_scores %}
         {% endif %}
     </div>
 
     <!-- Winners -->
     <div id="winners" class="tab-content hidden">
         <h2 class="text-2xl font-bold mb-4 text-indigo-700">Winners</h2>
-        {% include 'partials/candidate_list.html' with candidates=final_female_candidates gender="Female" criteria=final_criteria scores_dict=final_scores_dict total_scores=final_total_scores round_type="Final" winners=True winner_ids=winner_ids %}
+        {% include 'partials/candidate_list.html' with candidates=final_female_candidates gender="Female" criteria=final_criteria scores_dict=final_scores_dict total_scores=total_combined_scores round_type="Final" winners=True prelim_total_scores=prelim_total_scores final_total_scores=final_total_scores %}
         {% if final_male_candidates %}
-            {% include 'partials/candidate_list.html' with candidates=final_male_candidates gender="Male" criteria=final_criteria scores_dict=final_scores_dict total_scores=final_total_scores round_type="Final" winners=True winner_ids=winner_ids %}
+            {% include 'partials/candidate_list.html' with candidates=final_male_candidates gender="Male" criteria=final_criteria scores_dict=final_scores_dict total_scores=total_combined_scores round_type="Final" winners=True prelim_total_scores=prelim_total_scores final_total_scores=final_total_scores %}
         {% endif %}
     </div>
 </div>

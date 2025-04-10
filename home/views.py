@@ -603,7 +603,7 @@ def event_scores(request, event_id):
     # Get all candidates
     all_candidates = Candidate.objects.filter(event=event)
     
-    # Preliminary Round Scores - Average across all judges
+    # Preliminary Round Scores
     prelim_scores = Score.objects.filter(
         event=event, 
         criteria__round="Preliminary"
@@ -633,11 +633,10 @@ def event_scores(request, event_id):
     sorted_female_candidates = sorted(female_candidates, key=lambda x: prelim_total_scores.get(x.id, 0), reverse=True)
     sorted_male_candidates = sorted(male_candidates, key=lambda x: prelim_total_scores.get(x.id, 0), reverse=True)
     
-    # Add ranks to prelim candidates
     prelim_female_ranks = {cand.id: i + 1 for i, cand in enumerate(sorted_female_candidates)}
     prelim_male_ranks = {cand.id: i + 1 for i, cand in enumerate(sorted_male_candidates)}
     
-    # Final Round Scores - Top 5 per gender based on prelim avg total
+    # Final Round Scores
     prelim_female_totals = [(cand_id, total) for cand_id, total in prelim_total_scores.items() 
                            if Candidate.objects.get(id=cand_id).gender == "Female"]
     prelim_male_totals = [(cand_id, total) for cand_id, total in prelim_total_scores.items() 
@@ -662,34 +661,30 @@ def event_scores(request, event_id):
     
     final_scores_dict = {}
     final_total_scores = {}
+    total_combined_scores = {}  # Combined prelim + final scores
     for score in final_scores:
         cand_id = score['candidate']
         if cand_id not in final_scores_dict:
             final_scores_dict[cand_id] = {}
             final_total_scores[cand_id] = 0
+            total_combined_scores[cand_id] = prelim_total_scores.get(cand_id, 0)
         final_scores_dict[cand_id][score['criteria__id']] = score['avg_score']
         final_total_scores[cand_id] += score['avg_score']
+        total_combined_scores[cand_id] += score['avg_score']
     
-    # Split final candidates by gender and sort with ranks
+    # Final candidates by gender
     final_female_candidates = all_candidates.filter(gender="Female", id__in=[cand[0] for cand in top_5_female])
     final_male_candidates = all_candidates.filter(gender="Male", id__in=[cand[0] for cand in top_5_male])
     
-    sorted_final_female_candidates = sorted(final_female_candidates, key=lambda x: final_total_scores.get(x.id, 0), reverse=True)
-    sorted_final_male_candidates = sorted(final_male_candidates, key=lambda x: final_total_scores.get(x.id, 0), reverse=True)
+    sorted_final_female_candidates = sorted(final_female_candidates, key=lambda x: total_combined_scores.get(x.id, 0), reverse=True)
+    sorted_final_male_candidates = sorted(final_male_candidates, key=lambda x: total_combined_scores.get(x.id, 0), reverse=True)
     
-    # Add ranks to final candidates
     final_female_ranks = {cand.id: i + 1 for i, cand in enumerate(sorted_final_female_candidates)}
     final_male_ranks = {cand.id: i + 1 for i, cand in enumerate(sorted_final_male_candidates)}
     
-    # Winners - Top 4 per gender from Final Round
-    top_4_female_winners = sorted_final_female_candidates[:4]  # Top 4 female winners
-    top_4_male_winners = sorted_final_male_candidates[:4]      # Top 4 male winners
-    
-    # Top 4 overall (for context, though not used in Winners tab anymore)
-    final_totals = [(cand_id, total) for cand_id, total in final_total_scores.items()]
-    top_4_winners = sorted(final_totals, key=lambda x: x[1], reverse=True)[:4]
-    winner_ids = [cand[0] for cand in top_4_winners]
-    winner_ranks = {cand_id: i + 1 for i, (cand_id, _) in enumerate(top_4_winners)}
+    # Winners
+    top_4_female_winners = sorted_final_female_candidates[:4]
+    top_4_male_winners = sorted_final_male_candidates[:4]
     
     context = {
         'event': event,
@@ -703,18 +698,15 @@ def event_scores(request, event_id):
         'prelim_total_scores': prelim_total_scores,
         'final_scores_dict': final_scores_dict,
         'final_total_scores': final_total_scores,
+        'total_combined_scores': total_combined_scores,
         'prelim_female_ranks': prelim_female_ranks,
         'prelim_male_ranks': prelim_male_ranks,
         'final_female_ranks': final_female_ranks,
         'final_male_ranks': final_male_ranks,
-        'winner_ids': winner_ids,
-        'winner_ranks': winner_ranks,
-        'top_4_female_winners': top_4_female_winners,  # Top 4 female winners
-        'top_4_male_winners': top_4_male_winners,      # Top 4 male winners
+        'top_4_female_winners': top_4_female_winners,
+        'top_4_male_winners': top_4_male_winners,
     }
     
     return render(request, 'home/event_scores.html', context)
-
-
 
 

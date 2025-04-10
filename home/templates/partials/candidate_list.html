@@ -1,3 +1,4 @@
+
 {% load custom_filters %}
 <div class="mb-8">
     <h3 class="text-xl font-medium mb-4 text-gray-900">{{ gender }} Candidates</h3>
@@ -8,9 +9,17 @@
                     <th class="p-2">No.</th>
                     <th class="p-2">Rank</th>
                     <th class="p-2">Name</th>
-                    {% for criterion in criteria %}
-                        <th class="p-2">{{ criterion.title }} ({{ criterion.percentage }}%)</th>
-                    {% endfor %}
+                    {% if winners %}
+                        <th class="p-2">Preliminary</th>
+                        <th class="p-2">Final</th>
+                    {% else %}
+                        {% if round_type == "Final" %}
+                            <th class="p-2">Preliminary Total</th>
+                        {% endif %}
+                        {% for criterion in criteria %}
+                            <th class="p-2">{{ criterion.title }} ({{ criterion.percentage }}%)</th>
+                        {% endfor %}
+                    {% endif %}
                     <th class="p-2">Total Score</th>
                 </tr>
             </thead>
@@ -60,19 +69,33 @@
                             {% endif %}
                             {{ candidate.name }}
                         </td>
-                        {% for criterion in criteria %}
+                        {% if winners %}
                             <td class="p-2">
-                                {% with scores_dict|get_item:candidate.id as candidate_scores %}
-                                    {% with candidate_scores|get_item:criterion.id as score %}
-                                        {% if score is not None %}
-                                            <span class="text-gray-500">{{ score|floatformat:1 }}</span>
-                                        {% else %}
-                                            <span class="text-gray-500">0</span>
-                                        {% endif %}
-                                    {% endwith %}
-                                {% endwith %}
+                                <span class="text-gray-500">{{ prelim_total_scores|get_item:candidate.id|default:0|floatformat:1 }}</span>
                             </td>
-                        {% endfor %}
+                            <td class="p-2">
+                                <span class="text-gray-500">{{ final_total_scores|get_item:candidate.id|default:0|floatformat:1 }}</span>
+                            </td>
+                        {% else %}
+                            {% if round_type == "Final" %}
+                                <td class="p-2">
+                                    <span class="text-gray-500">{{ prelim_total_scores|get_item:candidate.id|default:0|floatformat:1 }}</span>
+                                </td>
+                            {% endif %}
+                            {% for criterion in criteria %}
+                                <td class="p-2">
+                                    {% with scores_dict|get_item:candidate.id as candidate_scores %}
+                                        {% with candidate_scores|get_item:criterion.id as score %}
+                                            {% if score is not None %}
+                                                <span class="text-gray-500">{{ score|floatformat:1 }}</span>
+                                            {% else %}
+                                                <span class="text-gray-500">0</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endwith %}
+                                </td>
+                            {% endfor %}
+                        {% endif %}
                         <td class="p-2" id="total-score-{{ candidate.id }}-{{ round_type }}">
                             <span class="text-gray-500">{{ total_score|default:0|floatformat:1 }}</span>
                         </td>
