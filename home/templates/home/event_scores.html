@@ -77,6 +77,22 @@ function printTable(tableId) {
     const subHeading = tableContainer.querySelector('h3')?.innerText || '';
     const tableHTML = tableContainer.querySelector('.bg-white')?.outerHTML || '';
 
+    // Get judges' names from the template context
+    const judges = [{% for judge in event.judges.all %}"{{ judge.get_full_name|default:judge.username }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+
+    // Create judges' signature section
+    let judgesHTML = '<div class="mt-8"><h3 class="text-lg font-semibold mb-12 text-center">Judges</h3>';
+    judgesHTML += '<div class="flex flex-wrap gap-4 justify-center">';
+    judges.forEach(judge => {
+        judgesHTML += `
+            <div class="w-48">
+                <div class="border-t border-gray-400 pt-6"></div>
+                <p class="text-base font-medium text-center">${judge}</p>
+            </div>
+        `;
+    });
+    judgesHTML += '</div></div>';
+
     // Create iframe
     const iframe = document.createElement('iframe');
     iframe.style.position = 'fixed';
@@ -106,6 +122,7 @@ function printTable(tableId) {
                 </div>
             </div>
             ${tableHTML}
+            ${judgesHTML}
         </body>
         </html>
     `);
