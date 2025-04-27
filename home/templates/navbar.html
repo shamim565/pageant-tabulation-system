@@ -26,9 +26,20 @@
                 </a>
             </div>
 
-            <!-- Right: Logout/Login -->
+            <!-- Right: User Info and Logout/Login -->
             <div class="flex items-center space-x-4">
                 {% if user.is_authenticated %}
+                    <div class="flex flex-col text-white text-right">
+                        <span class="font-medium truncate max-w-[150px] sm:max-w-[200px] hidden sm:block uppercase">
+                            {{ user.get_full_name|default:user.username }}
+                        </span>
+                        <span class="font-medium truncate max-w-[100px] sm:hidden uppercase">
+                            {{ user.get_full_name|default:user.username }}
+                        </span>
+                        <span class="text-sm font-light">
+                            {% if user.is_superuser %}Administrator{% else %}Judge{% endif %}
+                        </span>
+                    </div>
                     <form method="post" action="{% url 'logout' %}" class="inline">
                         {% csrf_token %}
                         <button type="submit" class="flex items-center px-3 py-2 text-white rounded-lg hover:bg-indigo-700 transition duration-75">
